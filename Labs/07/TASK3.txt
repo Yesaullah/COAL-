@@ -1,0 +1,50 @@
+INCLUDE Irvine32.inc
+.DATA
+    array1 DWORD 10, 20, 30, 40, 50 
+    array2 DWORD 5, 15, 25, 35, 45  
+    arrSize DWORD 5                 
+    sum1 DWORD ?                   
+    sum2 DWORD ?                    
+    totalSum DWORD ?                
+.CODE
+main PROC
+    PUSH OFFSET array1  
+    PUSH arrSize         
+    CALL SumArray
+    MOV sum1, EAX        
+    PUSH OFFSET array2  
+    PUSH arrSize         
+    CALL SumArray
+    MOV sum2, EAX       
+    PUSH sum1
+    PUSH sum2
+    CALL AddSums
+    MOV totalSum, EAX   
+    MOV EAX, totalSum
+    CALL WriteDec
+    CALL Crlf
+    INVOKE ExitProcess, 0
+main ENDP
+SumArray PROC
+    PUSH EBP
+    MOV EBP, ESP
+
+    MOV ECX, [EBP+8] 
+    MOV ESI, [EBP+12]  
+    XOR EAX, EAX     
+SumLoop:
+    ADD EAX, DWORD PTR [ESI]  
+    ADD ESI, 4             
+    LOOP SumLoop              
+    POP EBP
+    RET 8 
+SumArray ENDP
+AddSums PROC
+    PUSH EBP
+    MOV EBP, ESP
+    MOV EAX, [EBP+8]  
+    ADD EAX, [EBP+12]
+    POP EBP
+    RET 8 
+AddSums ENDP
+END main
